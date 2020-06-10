@@ -25,6 +25,7 @@ jobs:
         ref: ${{ github.ref }}
         environment: dev
         auto_merge: false
+        required_contexts: []
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
