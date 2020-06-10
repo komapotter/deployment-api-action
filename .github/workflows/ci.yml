@@ -1,9 +1,9 @@
+name: ci-with-development-api
+
 on:
   push:
     branches:
       - master
-
-name: ci-with-development-api
 
 jobs:
   build:
@@ -12,54 +12,15 @@ jobs:
     timeout-minutes: 300
 
     steps:
-    # Create check run
-    - uses: octokit/request-action@v2.x
-      id: create_check_run
-      with:
-        route: POST /repos/:repository/check-runs
-        repository: ${{ github.repository }}
-        mediaType: | # The | is significant!
-          previews: 
-            - antiope
-        name: "Test check run"
-        head_sha: ${{ github.sha }}
-        output: | # The | is significant!
-          title: Test check run title
-          summary: A summary of the test check run
-          images:
-            - alt: Test image
-              image_url: https://octodex.github.com/images/jetpacktocat.png
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    # Update check run to completed, succesful status
-    - uses: octokit/request-action@v2.x
-      id: update_check_run
-      with:
-        route: PATCH /repos/:repository/check-runs/:check_run_id
-        repository: ${{ github.repository }}
-        mediaType: | # The | is significant!
-          previews: 
-            - antiope
-        check_run_id: ${{ fromJson(steps.create_check_run.outputs.data).id }}
-        conclusion: "success"
-        status: "completed"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - name: create deployment
       id: create_deployment
       uses: octokit/request-action@v2.x
       with:
         route: POST /repos/:repository/deployments
         repository: ${{ github.repository }}
-        mediaType: | # The | is significant!
-           previews:
-             - flash
         ref: ${{ github.ref }}
-        environment: development
+        environment: dev
         auto_merge: false
-        required_contexts: ""
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -72,7 +33,8 @@ jobs:
         mediaType: | # The | is significant!
            previews:
              - flash
-        deployment_id: ${{ github.event.deployment.id }}
+             - ant-man
+        deployment_id: ${{ fromJson(steps.create_deployment.outputs.data).id }}
         state: "in_progress"
         description: "started deploy"
       env:
