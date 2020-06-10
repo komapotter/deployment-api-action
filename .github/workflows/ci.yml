@@ -1,0 +1,32 @@
+on: deployment
+
+name: ci-with-development-api
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-18.04
+    timeout-minutes: 300
+
+    steps:
+    - name: Trigger Branch
+      id: trigger-branch
+      run: |
+        echo "triggered: ${{ github.ref }}"
+        echo "deployment_id: ${{ github.event.deployment.id }}"
+        echo "deployment_env: ${{ github.event.deployment.environment }}"
+
+    - name: Start Deployment
+      id: start-deployment
+      uses: octokit/request-action@v2.0.2
+      with:
+        route: POST /repos/:repository/deployments/:deployment_id/statuses
+        repository: ${{ github.repository }}
+        mediaType: | # The | is significant!
+           previews:
+             - flash
+        deployment_id: ${{ github.event.deployment.id }}
+        state: "in_progress"
+        description: "started deploy"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
