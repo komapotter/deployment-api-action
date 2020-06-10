@@ -1,4 +1,7 @@
-on: deployment
+on:
+  push:
+    branches:
+      - master
 
 name: ci-with-development-api
 
@@ -9,14 +12,7 @@ jobs:
     timeout-minutes: 300
 
     steps:
-    - name: Trigger Branch
-      id: trigger-branch
-      run: |
-        echo "triggered: ${{ github.ref }}"
-        echo "deployment_id: ${{ github.event.deployment.id }}"
-        echo "deployment_env: ${{ github.event.deployment.environment }}"
-
-    - name: Start Deployment
+    - name: Start Deployment ${{ github.event.deployment.environment }} ${{ github.event.deployment.task }}
       id: start-deployment
       uses: octokit/request-action@v2.0.2
       with:
