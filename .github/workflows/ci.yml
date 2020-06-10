@@ -18,6 +18,10 @@ jobs:
       with:
         route: POST /repos/:repository/deployments
         repository: ${{ github.repository }}
+        mediaType: | # The | is significant!
+           previews:
+             - flash
+             - ant-man
         ref: ${{ github.ref }}
         environment: dev
         auto_merge: false
