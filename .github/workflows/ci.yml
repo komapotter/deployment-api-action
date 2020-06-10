@@ -22,11 +22,11 @@ jobs:
         environment: development
         auto_merge: false
       env:
-        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Start Deployment ${{ github.event.deployment.environment }} ${{ github.event.deployment.task }}
       id: start-deployment
-      uses: octokit/request-action@v2.0.2
+      uses: octokit/request-action@v2.x
       with:
         route: POST /repos/:repository/deployments/:deployment_id/statuses
         repository: ${{ github.repository }}
