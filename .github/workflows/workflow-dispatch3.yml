@@ -1,0 +1,13 @@
+on: workflow_dispatch
+
+name: WorkflowDispatch3
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-18.04
+    timeout-minutes: 300
+    steps:
+    - name: debug
+      run: |
+        echo ${{ github.event.ref }}
